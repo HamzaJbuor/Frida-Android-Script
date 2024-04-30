@@ -1,5 +1,5 @@
 Java.perform(function () {
-    var exports = Module.enumerateExportsSync("libreverse.so");
+    var exports = Module.enumerateExportsSync("libUE4.so");
 
     var File = Java.use('java.io.File');
     var FileOutputStream = Java.use('java.io.FileOutputStream');
@@ -8,7 +8,7 @@ Java.perform(function () {
 
     function logToFile(data) {
         try {
-            var file = File.$new("/data/user/0/com.shield.cheat/files/ex.txt");
+            var file = File.$new("/data/user/0/com.tencent.ig/files/ex.txt");
             var fos = FileOutputStream.$new(file, true);  // Append mode
             var writer = BufferedWriter.$new(OutputStreamWriter.$new(fos));
 
@@ -23,7 +23,16 @@ Java.perform(function () {
     }
 
     exports.forEach(function (exp) {
-        console.log(exp.name + " at " + exp.address);
-        logToFile(exp.name + " at " + exp.address);
+        logToFile("Hook: " + exp.name + " in: " + exports.name + " at: " + ptr(exp.address));
+        try {
+            Interceptor.attach(ptr(exp.address), {
+                onEnter: function (args) {
+                    console.log("Called: "+ exp.name);
+                }
+            });
+         } catch (e) {
+            console.log("Error: " + e + " at F: " + exp.name + "in M: " + exports.name);
+         }
     });
 });
+
