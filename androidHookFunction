@@ -1,0 +1,8 @@
+
+Java.perform(() => {
+	const oldClass = Java.use("com.my.newproject93.MainActivity"); // class name in your app
+	oldClass._isHamza.implementation = function(v){ // _isHamza in MAinActivity to hook 
+        send("Function Hook");					
+        return true; // false or true
+    }
+});
