@@ -1,0 +1,29 @@
+Java.perform(function () {
+    var exports = Module.enumerateExportsSync("libreverse.so");
+
+    var File = Java.use('java.io.File');
+    var FileOutputStream = Java.use('java.io.FileOutputStream');
+    var OutputStreamWriter = Java.use('java.io.OutputStreamWriter');
+    var BufferedWriter = Java.use("java.io.BufferedWriter");
+
+    function logToFile(data) {
+        try {
+            var file = File.$new("/data/user/0/com.shield.cheat/files/ex.txt");
+            var fos = FileOutputStream.$new(file, true);  // Append mode
+            var writer = BufferedWriter.$new(OutputStreamWriter.$new(fos));
+
+            var String = Java.use("java.lang.String");
+            var bytes = String.$new(data + "\n").getBytes();
+            fos.write(bytes); 
+            fos.flush();
+            fos.close(); 
+        } catch (err) {
+            console.error("Error writing to file: " + err.message);
+        }
+    }
+
+    exports.forEach(function (exp) {
+        console.log(exp.name + " at " + exp.address);
+        logToFile(exp.name + " at " + exp.address);
+    });
+});
