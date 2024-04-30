@@ -1,0 +1,53 @@
+//this js script to update any text in activty 
+//Created by Hamza Jabour
+//Telegram : @hamzajbour
+
+Java.perform(function () {
+    var TextView = Java.use("android.widget.TextView");
+    var ViewGroup = Java.use("android.view.ViewGroup");
+    var CharSequence = Java.use("java.lang.CharSequence");
+
+    function updateTextViews(view) {
+        if (TextView.class.isInstance(view)) {
+            var textView = Java.cast(view, TextView);
+            console.log("[*] Original Text: " + textView.getText().toString()); // print ori text 
+            var newText = Java.use("java.lang.String").$new("Text Updated"); //Convert text to java.lang.String
+            
+            if (textView.getText().length() > 0) {
+                textView.setText(newText);
+            }
+            
+            console.log("[*] byHmazaJbour: " + textView.getText().toString()); // print text update
+        }
+        if (ViewGroup.class.isInstance(view)) {
+            var viewGroup = Java.cast(view, ViewGroup);
+            var childCount = viewGroup.getChildCount();
+            for (var i = 0; i < childCount; i++) {
+                var child = viewGroup.getChildAt(i);
+                updateTextViews(child); // Iterate over sub-elements
+            }
+        }
+    }
+  
+    global.updateAllTextViews = function () {
+        Java.choose("android.app.Activity", {
+            onMatch: function (instance) {
+                console.log("[*] Found activity: " + instance.getComponentName().toString());
+                var window = instance.getWindow();
+                if (window !== null) {
+                    var decorView = window.getDecorView();
+                    if (decorView !== null) {
+                        updateTextViews(decorView);
+                    } else {
+                        console.error("DecorView is null");
+                    }
+                } else {
+                    console.error("Window is null");
+                }
+            },
+            onComplete: function () {
+                console.log("[*] Finished updating TextViews.");
+            }
+        });
+    };
+});
